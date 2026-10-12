@@ -277,6 +277,7 @@ function showGatewayResult(result) {
   if (result.tool_call && result.tool_result) {
     addToolCard(result.tool_call.name, result.tool_call.arguments, result.tool_result, result.model);
   }
+  if (result.search_performed || result.sources?.length) addSearchSources(result.sources || []);
 }
 
 function addMessage(role, text) {
@@ -347,11 +348,48 @@ function addToolCard(name, args, result, model = '') {
 }
 
 function toolSummary(name, result) {
+  if (name === 'web_search') return [['Search tool', 'OpenAI Web Search'], ['Cited sources', result.source_count || 0]];
   if (name === 'get_personalized_route') return [['Best route', result.primary_highway], ['Distance / drive', `${result.distance_km} km · ${formatMinutes(result.estimated_duration_min)}`], ['Toll / arrival', `₩${formatNumber(result.toll_fee_krw)} · ${result.estimated_arrival}`]];
   if (name === 'reroute_optimal_path') return [['Incident', 'Multi-vehicle collision · 3 km ahead'], ['Suggested route', 'Bypass via South Daejeon IC'], ['Time saved / ETA', `${result.time_saved_min} min · ${result.new_eta}`]];
   if (name === 'search_nearby_amenities') return (result.stations || []).slice(0, 3).map((station) => [station.name, `${station.distance_km} km · ₩${formatNumber(station.gasoline_krw)}/L`]);
   if (name === 'send_trip_summary_email') return [['Trip report', `${result.telemetry_summary?.total_distance_km || 352.4} km · ${result.telemetry_summary?.duration_formatted || '3 hrs 48 mins'}`], ['Eco-score', `${result.telemetry_summary?.eco_score || 88}/100`], ['Recipient', result.recipient_email], ['Email delivery', 'Simulated only']];
   return [['Result', 'Fixture data returned']];
+}
+
+function addSearchSources(sources) {
+  const card = document.createElement('div');
+  card.className = 'tool-card search-sources';
+  const heading = document.createElement('div');
+  heading.className = 'tool-card-head';
+  const badge = document.createElement('span');
+  heading.append(badge, document.createTextNode('WEB SEARCH SOURCES'));
+  card.append(heading);
+  const list = document.createElement('div');
+  list.className = 'search-source-list';
+  for (const source of sources.slice(0, 8)) {
+    let url;
+    try { url = new URL(source.url); } catch { continue; }
+    if (url.protocol !== 'https:') continue;
+    const link = document.createElement('a');
+    link.href = url.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = source.title || url.hostname;
+    const host = document.createElement('small');
+    host.textContent = url.hostname;
+    const row = document.createElement('div');
+    row.className = 'search-source';
+    row.append(link, host);
+    list.append(row);
+  }
+  if (!list.childElementCount) {
+    const note = document.createElement('div');
+    note.className = 'search-source-empty';
+    note.textContent = 'No clickable source links were returned. Treat this result as unverified.';
+    card.append(note);
+  } else card.append(list);
+  nodes.messages.append(card);
+  scrollChatToBottom();
 }
 
 function formatMinutes(value) { return `${Math.floor(value / 60)} hr ${value % 60} min`; }
@@ -569,7 +607,7 @@ async function handleRealtimeToolCall(call) {
 }
 
 function normalizeIntent(intent) {
-  const allowed = new Set(['route', 'traffic', 'fuel', 'trip_report', 'chat', 'stop_listening', 'general']);
+  const allowed = new Set(['route', 'traffic', 'fuel', 'weather', 'trip_report', 'chat', 'stop_listening', 'general']);
   return allowed.has(intent) ? intent : null;
 }
 
@@ -578,6 +616,7 @@ function inferIntent(text) {
   if (/\b(stop listening|end (the )?(voice )?session|turn off (the )?mic|mute (the )?microphone|stop recording)\b/.test(value)) return 'stop_listening';
   if (/\b(trip report|driving report|journey report|trip summary|drive summary|email me|send (me )?(the )?(trip|driving|journey)? ?(report|summary))\b/.test(value)) return 'trip_report';
   if (/\b(fuel|gas station|petrol|gasoline|diesel|refuel|fill up|charging station|ev charger)\b/.test(value)) return 'fuel';
+  if (/\b(weather|forecast|rain|rainy|temperature|snow|wind|humid|humidity)\b/.test(value)) return 'weather';
   if (/\b(traffic|congestion|traffic jam|accident|crash|detour|rerout|roadblock|blocked road)\b/.test(value)) return 'traffic';
   if (/\b(route|directions|navigate|navigation|how do i get|drive to|way to)\b/.test(value)) return 'route';
   if (/\b(thank you|thanks|thank|joke|funny|bored|tired|hello|hi there|good morning|good afternoon)\b/.test(value)) return 'chat';
