@@ -35,9 +35,9 @@ If OpenAI returns HTTP 429, the prototype shows the provider error code and any 
 
 - **Voice path:** browser microphone and speaker ↔ GPT-Realtime-2.1 over WebRTC ↔ server-side AI gateway.
 - **Model routing:** conversation, gratitude, jokes, and stop requests route to GPT-6 Luna. Route, traffic, fuel, and trip-report requests route to GPT-6.1 Sol.
-- **Function calls:** route, detour, nearby-fuel, and trip-report functions return the attached fixture data.
+- **Function calls:** route, detour, and trip-report functions return attached fixture data. Fuel-price and destination-weather requests use the OpenAI Responses API `web_search` tool; clickable source links are shown in the conversation.
 - **Scenario data:** `data/scenarios.json` contains the driver profile, example utterances, tool schemas, and mock backend responses.
 
-The prototype does not connect a vector database, map provider, traffic feed, or live fuel-price source. The route, traffic, station, and price details are illustrative fixtures, and the map is decorative. When the driver indicates the trip is complete, the assistant offers a trip-report email. After clear consent it prepares a simulated report preview; no email service is connected and **no email is actually sent**.
+The prototype does not connect a vector database, map provider, live traffic feed, or dedicated fuel-price API. Fuel prices and weather come from web pages retrieved by OpenAI Web Search; source coverage and freshness can vary. The demo's “approaching Gyeongju IC” position and fuel level are scenario telemetry, not GPS or live vehicle data, so nearby-fuel results are searched around that demo location unless the driver gives another place. Route and traffic details remain illustrative fixtures, and the map is decorative. When the driver indicates the trip is complete, the assistant offers a trip-report email. After clear consent it prepares a simulated report preview; no email service is connected and **no email is actually sent**.
 
-The original briefing also describes text-embedding RAG and web search; those services are not wired into this demo. The implementation follows the voice, gateway, tiered-model, function-calling, and fixture-backend parts of the architecture.
+The original briefing also describes text-embedding RAG; that service is not wired into this demo. The implementation follows the voice, gateway, tiered-model, function-calling, web-search, and fixture-backend parts of the architecture.
