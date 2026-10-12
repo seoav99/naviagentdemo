@@ -346,7 +346,7 @@ async function handleRealtimeToolCall(call) {
 }
 
 function normalizeIntent(intent) {
-  return ['route', 'traffic', 'fuel', 'trip_report', 'chat', 'stop_listening', 'general'].includes(intent) ? intent : null;
+  return ['route', 'traffic', 'fuel', 'weather', 'trip_report', 'chat', 'stop_listening', 'general'].includes(intent) ? intent : null;
 }
 
 function addGatewayResult(result) {
@@ -371,16 +371,55 @@ function addGatewayResult(result) {
     const note = document.createElement('div'); note.className = 'gateway-note'; note.textContent = 'SIMULATED · no email was sent'; card.append(note);
   }
   ui.messages.append(card);
+  if (result.search_performed || result.sources?.length) addSearchSources(result.sources || []);
   scrollToBottom();
 }
 
 function summarizeTool(name, result = {}) {
   if (!name || !result) return [];
+  if (name === 'web_search') return [['Search tool', 'OpenAI Web Search'], ['Cited sources', result.source_count || 0]];
   if (name === 'get_personalized_route') return [['Route', result.primary_highway], ['Distance', `${result.distance_km} km`], ['Estimated drive', formatMinutes(result.estimated_duration_min)]];
   if (name === 'reroute_optimal_path') return [['Incident', 'Fixture traffic alert'], ['Suggested route', 'Bypass via South Daejeon IC'], ['Time saved', `${result.time_saved_min} min`]];
   if (name === 'search_nearby_amenities') return (result.stations || []).slice(0, 3).map((station) => [station.name, `${station.distance_km} km · ₩${formatNumber(station.gasoline_krw)}/L`]);
   if (name === 'send_trip_summary_email') return [['Trip', `${result.telemetry_summary?.total_distance_km || 352.4} km · ${result.telemetry_summary?.duration_formatted || '3 hrs 48 mins'}`], ['Eco-score', `${result.telemetry_summary?.eco_score || 88}/100`], ['Recipient', result.recipient_email]];
   return [];
+}
+
+function addSearchSources(sources) {
+  const card = document.createElement('article');
+  card.className = 'gateway-card search-sources';
+  const head = document.createElement('div');
+  head.className = 'gateway-head';
+  const dot = document.createElement('i');
+  const label = document.createElement('span');
+  label.textContent = 'WEB SEARCH SOURCES';
+  head.append(dot, label);
+  card.append(head);
+  const list = document.createElement('div');
+  list.className = 'search-source-list';
+  for (const source of sources.slice(0, 8)) {
+    let url;
+    try { url = new URL(source.url); } catch { continue; }
+    if (url.protocol !== 'https:') continue;
+    const link = document.createElement('a');
+    link.href = url.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = source.title || url.hostname;
+    const host = document.createElement('small');
+    host.textContent = url.hostname;
+    const row = document.createElement('div');
+    row.className = 'search-source';
+    row.append(link, host);
+    list.append(row);
+  }
+  if (!list.childElementCount) {
+    const note = document.createElement('div');
+    note.className = 'search-source-empty';
+    note.textContent = 'No clickable source links were returned. Treat this result as unverified.';
+    card.append(note);
+  } else card.append(list);
+  ui.messages.append(card);
 }
 
 function addMessage(role, text) {
