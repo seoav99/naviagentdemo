@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: wayfinder-smart-navigation-demo
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/status
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DEMO_ACCESS_CODE
+        sync: false

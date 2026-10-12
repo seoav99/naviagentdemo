@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101413">
+    <title>Wayfinder · Smart Navigation AI</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Wayfinder home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none"><path d="M16 3.5 7 27l9-5.7L25 27 16 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m16 3.5 1.2 15.8L7 27M17.2 19.3 25 27" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="brand-name">wayfinder<span> / mobility ai</span></span>
+        </a>
+        <div class="topbar-right">
+          <div class="journey-chip"><span class="live-dot"></span> Seoul <span class="chip-arrow">→</span> Gyeongju</div>
+          <a class="mobile-preview-link" href="/mobile">MOBILE APP VIEW <span>↗</span></a>
+          <button class="api-state" id="api-state" type="button" aria-label="Open OpenAI API settings"><span class="state-dot"></span><span id="api-state-label">Checking local setup</span><span class="api-state-chevron">⌄</span></button>
+          <button class="avatar" title="Ronald Seo">RS</button>
+        </div>
+      </header>
+
+      <section class="intro-row">
+        <div>
+          <p class="eyebrow">PERSONAL DRIVE ASSISTANT <span>·</span> PROTOTYPE</p>
+          <h1>Your drive, <em>in flow.</em></h1>
+          <p class="intro-copy">One calm conversation from departure to arrival.</p>
+        </div>
+        <div class="journey-summary">
+          <div class="summary-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 19.5 18.5 6M8 6h10.5v10.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><span class="eyebrow">TODAY'S JOURNEY</span><strong>Gangnam <span>to</span> Gyeongju</strong><small>346 km <i>·</i> approx. 3 hr 38 min</small></div>
+          <span class="summary-status">DEMO ROUTE</span>
+        </div>
+      </section>
+
+      <main class="workspace">
+        <aside class="flow-panel panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">VOICE SESSION</p><h2>Example requests</h2></div>
+            <span class="step-count">ANY <i>ORDER</i></span>
+          </div>
+          <div class="flow-line" aria-hidden="true"></div>
+          <nav class="step-list" id="step-list" aria-label="Example requests"></nav>
+          <div class="driver-card">
+            <div class="driver-avatar">RS</div>
+            <div><span class="eyebrow">YOUR PROFILE</span><strong>Ronald Seo</strong><small>Prefers Gyeongbu Expressway</small></div>
+            <button id="profile-toggle" class="more-button" aria-label="Show profile details">···</button>
+          </div>
+          <p class="profile-extra hidden" id="profile-extra">Home: Gangnam Station, Seoul<br>Unpaved roads: avoided</p>
+        </aside>
+
+        <section class="journey-panel panel">
+          <div class="map-header">
+            <div>
+              <p class="eyebrow"><span class="step-kicker">JOURNEY CONTEXT</span><span class="eyebrow-separator">/</span> ILLUSTRATIVE ROUTE</p>
+              <h2>Your Seoul to Gyeongju drive.</h2>
+              <p class="map-subtitle">Ask naturally about directions, traffic, fuel, or anything else.</p>
+            </div>
+            <button class="map-action" id="center-route" title="Center route" aria-label="Center route"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.25" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          </div>
+          <div class="map-canvas" id="map-canvas">
+            <div class="map-grid"></div>
+            <div class="map-label label-seoul"><span class="map-pin origin-pin"></span><strong>SEOUL</strong><small>Gangnam Station</small></div>
+            <div class="map-label label-daejeon"><span class="map-pin mid-pin"></span><strong>DAEJEON</strong><small id="map-middle-caption">Traffic watch</small></div>
+            <div class="map-label label-gyeongju"><span class="map-pin dest-pin"></span><strong>GYEONGJU</strong><small>Destination</small></div>
+            <svg class="route-map" viewBox="0 0 800 340" preserveAspectRatio="none" aria-label="Illustrated route from Seoul to Gyeongju">
+              <path class="route-shadow" d="M92 98 C152 112 148 157 236 149 S336 194 410 175 S500 196 548 229 S653 226 714 250"/>
+              <path class="route-base" d="M92 98 C152 112 148 157 236 149 S336 194 410 175 S500 196 548 229 S653 226 714 250"/>
+              <path class="route-active" id="route-active" d="M92 98 C152 112 148 157 236 149 S336 194 410 175 S500 196 548 229 S653 226 714 250"/>
+              <circle class="route-node node-seoul" cx="92" cy="98" r="6"/><circle class="route-node node-daejeon" cx="410" cy="175" r="5"/><circle class="route-node node-gyeongju" cx="714" cy="250" r="6"/>
+              <circle class="route-pulse" id="route-pulse" cx="92" cy="98" r="15"/>
+            </svg>
+            <div class="map-road road-1">GYEONGBU EXPRESSWAY</div>
+            <div class="map-road road-2" id="map-road-note">ROUTE 1 · 346 KM</div>
+            <div class="map-legend"><span class="legend-line"></span> preferred route <span class="legend-divider"></span><span class="legend-dot"></span> journey point</div>
+            <div class="map-zoom"><button aria-label="Zoom in">+</button><span></span><button aria-label="Zoom out">−</button></div>
+          </div>
+          <div class="metrics-row" id="metrics-row">
+            <article class="metric-card"><div class="metric-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="m4 17 5-5 3 3 7-8M14 7h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><span class="eyebrow">DISTANCE</span><strong id="distance-metric">346 <small>km</small></strong><span class="metric-note">to your destination</span></div></article>
+            <article class="metric-card"><div class="metric-icon orange"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><span class="eyebrow">EST. DRIVE</span><strong id="time-metric">3 <small>hr</small> 38 <small>min</small></strong><span class="metric-note">arrival around 5:18 PM</span></div></article>
+            <article class="metric-card"><div class="metric-icon green"><svg viewBox="0 0 24 24" fill="none"><path d="M4.5 18.5 19 4M6 5h4v4M18 15v4h-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><span class="eyebrow">ON YOUR ROUTE</span><strong id="route-metric">Gyeongbu <small>Expressway</small></strong><span class="metric-note" id="route-note">Preferred road · ₩18,200 toll</span></div></article>
+          </div>
+          <div class="architecture-note"><span class="architecture-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7v5c0 4.4 3.4 7.9 8 9 4.6-1.1 8-4.6 8-9V7l-8-4Z" stroke="currentColor" stroke-width="1.5"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>Personalized by design</strong><small>Route choices reflect your driving preferences.</small></span><span class="powered-by">OPENAI<br><b>VOICE AGENT</b></span></div>
+          <div class="scenario-footer"><span>Illustrative mock data · Ask in any order</span><span>Updates appear in the conversation</span></div>
+          <div class="scenario-data" id="scenario-data"></div>
+        </section>
+
+        <section class="assistant-panel panel" aria-label="Navigation assistant">
+          <div class="assistant-header">
+            <div class="assistant-identity"><div class="assistant-avatar"><svg viewBox="0 0 28 28" fill="none"><path d="M14 3.2 6.5 24l7.5-4.8 7.5 4.8L14 3.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="14" cy="14" r="2" fill="currentColor"/></svg></div><div><h2>Wayfinder</h2><span><i class="assistant-status-dot"></i><span id="assistant-status">READY WHEN YOU ARE</span></span></div></div>
+            <div class="assistant-controls"><button type="button" id="voice-button" class="voice-button" aria-label="Start voice session" title="Start the continuous Realtime voice session"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="12" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span id="voice-button-label">Start voice</span></button></div>
+          </div>
+          <div class="conversation-context"><span class="context-mark"></span><span>OPEN CONVERSATION · ENGLISH · ANY TOPIC</span></div>
+          <div class="chat-scroll" id="chat-scroll">
+            <div class="chat-time">TODAY <span>·</span> DRIVE PREVIEW</div>
+            <div class="welcome-card" id="welcome-card"><div class="welcome-ornament">✳</div><p>Start once, then speak naturally.</p><span>Press Start voice and keep talking. Ask about your route, a detour, fuel, a trip report, a joke, or say thanks or stop. You do not need to follow the examples.</span></div>
+            <div id="messages" class="messages" aria-live="polite"></div>
+            <div class="typing-indicator hidden" id="typing-indicator"><span></span><span></span><span></span><small>WAYFINDER IS THINKING</small></div>
+          </div>
+          <div class="chat-compose">
+            <div class="suggestion" id="suggestion-row"><span class="suggestion-spark">✦</span><span id="suggestion-text">Try a starter request, or ask your own</span><button id="use-sample">USE EXAMPLE <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h9m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+            <form id="chat-form" class="composer">
+              <textarea id="chat-input" rows="1" placeholder="Say something in English…" aria-label="Message Wayfinder"></textarea>
+              <div class="composer-actions"><span class="input-hint"><kbd>↵</kbd> to send</span><div class="action-buttons"><button type="submit" id="send-button" class="send-button" aria-label="Send message"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12 20 4l-5.5 16-3.2-6.8L4 12Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m11.3 13.2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div></div>
+            </form>
+            <div class="compose-bottom"><span class="security-lock"><svg viewBox="0 0 14 14" fill="none"><rect x="2.3" y="6" width="9.4" height="6" rx="1.2" stroke="currentColor" stroke-width="1.1"/><path d="M4.5 6V4.4a2.5 2.5 0 0 1 5 0V6" stroke="currentColor" stroke-width="1.1"/></svg><span id="compose-note">Prototype fixtures · OpenAI not configured</span></span><span class="voice-hint">Start once · stay connected</span></div>
+          </div>
+        </section>
+      </main>
+      <footer class="footer"><span><span class="footer-star">✳</span> A prototype shaped by your journey.</span><span class="footer-right">SMART NAVIGATION <i>·</i> OPENAI API <i>·</i> FIXTURE DATA</span></footer>
+    </div>
+    <div class="modal-backdrop hidden" id="access-modal" role="presentation">
+      <section class="key-dialog" role="dialog" aria-modal="true" aria-labelledby="access-title">
+        <span class="eyebrow">PRIVATE PREVIEW</span>
+        <h2 id="access-title">Enter the demo access code</h2>
+        <p class="key-dialog-copy">This preview uses a shared AI connection. Enter the code provided by the demo owner to continue.</p>
+        <form id="access-form">
+          <label for="access-code-input">Access code</label>
+          <div class="key-input-wrap"><input id="access-code-input" type="password" placeholder="Enter access code" autocomplete="one-time-code" required><button id="access-visibility" type="button">SHOW</button></div>
+          <div class="key-dialog-actions"><span></span><button class="key-save" id="access-submit" type="submit">Continue <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h9m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+          <p class="key-error hidden" id="access-error"></p>
+        </form>
+      </section>
+    </div>
+    <div class="modal-backdrop hidden" id="key-modal" role="presentation">
+      <section class="key-dialog" role="dialog" aria-modal="true" aria-labelledby="key-dialog-title">
+        <button class="key-close" id="key-close" type="button" aria-label="Close settings">×</button>
+        <span class="key-dialog-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M8.5 14a4.5 4.5 0 1 1 4.1 4.5L11 20H8v-3l2.4-2.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="9.5" r="1" fill="currentColor"/><path d="m15 9 2 2m-4-4 2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        <p class="eyebrow">LOCAL CONNECTION</p>
+        <h2 id="key-dialog-title">Connect your OpenAI API</h2>
+        <p class="key-dialog-copy">Your key is sent to this local server, held in memory, and used for your OpenAI requests. It is not saved to a file.</p>
+        <form id="key-form">
+          <label for="api-key-input">API key</label>
+          <div class="key-input-wrap"><input id="api-key-input" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false"><button id="key-visibility" type="button">SHOW</button></div>
+          <p class="key-warning">The key shared earlier in chat should be revoked. Enter a newly generated key here.</p>
+          <div class="key-dialog-actions"><button class="key-cancel" id="key-cancel" type="button">Cancel</button><button class="key-save" id="key-save" type="submit">Connect API <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h9m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+          <p class="key-error hidden" id="key-error"></p>
+        </form>
+      </section>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

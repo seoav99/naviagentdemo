@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#111712">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Wayfinder · Mobile</title>
+    <link rel="stylesheet" href="/mobile.css">
+    <script src="/mobile.js" defer></script>
+  </head>
+  <body>
+    <main class="phone-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Wayfinder desktop demo">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M14 3.2 6.5 24l7.5-4.8 7.5 4.8L14 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="14" cy="14" r="2" fill="currentColor"/></svg></span>
+          <span><strong>Wayfinder</strong><small>SMART DRIVE ASSISTANT</small></span>
+        </a>
+        <div class="top-actions">
+          <span class="connection" id="connection-state"><i></i><span id="connection-label">OFFLINE</span></span>
+          <button class="icon-button" id="settings-button" type="button" aria-label="API settings" title="API settings"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8.7a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6Z" stroke="currentColor" stroke-width="1.5"/><path d="m19.4 13.5 1.1.8-1.5 2.6-1.3-.6a7.8 7.8 0 0 1-1.5.9l-.2 1.4h-3l-.3-1.4a7.8 7.8 0 0 1-1.5-.9l-1.3.6-1.5-2.6 1.1-.8a7.4 7.4 0 0 1 0-1.8l-1.1-.8 1.5-2.6 1.3.6a7.8 7.8 0 0 1 1.5-.9l.3-1.4h3l.2 1.4a7.8 7.8 0 0 1 1.5.9l1.3-.6 1.5 2.6-1.1.8a7.4 7.4 0 0 1 0 1.8Z" transform="translate(-1 -1)" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></button>
+        </div>
+      </header>
+
+      <section class="trip-card" aria-label="Demo journey overview">
+        <div class="trip-topline"><span class="eyebrow">DRIVE PREVIEW</span><span class="demo-tag"><i></i> MOCK JOURNEY</span></div>
+        <div class="trip-route">
+          <div class="route-point"><i class="point-origin"></i><span><small>STARTING FROM</small><strong>Gangnam, Seoul</strong></span></div>
+          <div class="route-line"><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="route-point"><i class="point-destination"></i><span><small>DESTINATION</small><strong>Gyeongju</strong></span></div>
+        </div>
+        <div class="trip-foot"><span><svg viewBox="0 0 20 20" fill="none"><path d="M3 14.5 8 9.5l3 3L17 6m-4 0h4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Gyeongbu Expressway</span><span>346 km <b>·</b> 3 hr 38 min</span></div>
+      </section>
+
+      <section class="assistant-heading">
+        <div><span class="eyebrow">YOUR IN-CAR COMPANION</span><h1>Where can I help?</h1></div>
+        <span class="language-pill">EN <i></i></span>
+      </section>
+
+      <section class="chat-panel" aria-label="Conversation with Wayfinder">
+        <div class="chat-scroll" id="chat-scroll">
+          <div class="welcome" id="welcome-card">
+            <div class="welcome-icon"><svg viewBox="0 0 28 28" fill="none"><path d="M14 3.2 6.5 24l7.5-4.8 7.5 4.8L14 3.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="14" cy="14" r="2" fill="currentColor"/></svg></div>
+            <strong>Start once, then talk naturally.</strong>
+            <p>Ask about your route, traffic, fuel, or anything else. The examples are optional, and you can change topics anytime.</p>
+          </div>
+          <div class="messages" id="messages" aria-live="polite"></div>
+          <div class="thinking hidden" id="thinking"><span></span><span></span><span></span><small>WAYFINDER IS THINKING</small></div>
+        </div>
+        <div class="conversation-status"><span class="status-pulse"></span><span id="assistant-status">READY WHEN YOU ARE</span><span class="status-divider"></span><span>English</span></div>
+      </section>
+
+      <section class="quick-prompts" aria-label="Optional example prompts">
+        <div class="quick-head"><span>TRY ASKING</span><small>Optional examples</small></div>
+        <div class="chip-row">
+          <button type="button" data-prompt="Plan a route from Gangnam, Seoul to Gyeongju."><span>↗</span> Route</button>
+          <button type="button" data-prompt="Traffic seems heavy near Daejeon. Can you find another way?"><span>⌁</span> Traffic</button>
+          <button type="button" data-prompt="I'm low on fuel near Gyeongju. Find nearby stations and prices."><span>◉</span> Fuel</button>
+          <button type="button" data-prompt="I'm really tired. Tell me a funny joke."><span>✳</span> A joke</button>
+          <button type="button" data-prompt="Please send me my trip report."><span>▤</span> Trip report</button>
+        </div>
+      </section>
+
+      <footer class="composer-dock">
+        <form id="chat-form" class="composer">
+          <textarea id="chat-input" rows="1" placeholder="Message Wayfinder…" aria-label="Message Wayfinder"></textarea>
+          <button class="send-button" id="send-button" type="submit" aria-label="Send message"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12 20 4l-5.5 16-3.2-6.8L4 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m11.3 13.2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </form>
+        <div class="voice-row"><span class="privacy-note"><svg viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.2"/></svg><span id="api-note">Connect API to start</span></span><button class="voice-button" id="voice-button" type="button"><span class="mic-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="12" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span id="voice-label">Start voice</span></button></div>
+        <div class="fixture-note">DEMO DATA · Prices, routes, and traffic are illustrative</div>
+      </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="sheet-backdrop hidden" id="access-modal" role="presentation">
+      <section class="key-sheet" role="dialog" aria-modal="true" aria-labelledby="access-title">
+        <div class="sheet-grabber"></div>
+        <span class="eyebrow">PRIVATE PREVIEW</span>
+        <h2 id="access-title">Enter the demo access code</h2>
+        <p>This preview uses a shared AI connection. Enter the code provided by the demo owner to continue.</p>
+        <form id="access-form">
+          <label for="access-code-input">Access code</label>
+          <div class="key-field"><input id="access-code-input" type="password" placeholder="Enter access code" autocomplete="one-time-code" required><button id="access-visibility" type="button">SHOW</button></div>
+          <p class="key-error hidden" id="access-error"></p>
+          <button class="connect-button" id="access-submit" type="submit">Continue <span>→</span></button>
+        </form>
+      </section>
+    </div>
+    <div class="sheet-backdrop hidden" id="key-modal" role="presentation">
+      <section class="key-sheet" role="dialog" aria-modal="true" aria-labelledby="key-title">
+        <div class="sheet-grabber"></div>
+        <button class="sheet-close" id="key-close" type="button" aria-label="Close settings">×</button>
+        <span class="eyebrow">LOCAL CONNECTION</span>
+        <h2 id="key-title">Connect OpenAI API</h2>
+        <p>Your key stays in this local server's memory and clears when it stops. Use a fresh API key from your API Platform project.</p>
+        <form id="key-form">
+          <label for="api-key-input">API key</label>
+          <div class="key-field"><input id="api-key-input" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false"><button id="key-visibility" type="button">SHOW</button></div>
+          <p class="key-warning">Revoke the key previously shared in chat before using this demo.</p>
+          <p class="key-error hidden" id="key-error"></p>
+          <button class="connect-button" id="key-save" type="submit">Connect API <span>→</span></button>
+        </form>
+      </section>
+    </div>
+  </body>
+</html>
