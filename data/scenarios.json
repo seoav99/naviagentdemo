@@ -106,58 +106,18 @@
     {
       "step": 3,
       "phase": "On-Driving",
-      "title": "Real-time POI & Fuel Price Grounding",
-      "user_utterance": "We're almost at Gyeongju, but low on fuel. Any nearby gas stations and their prices?",
-      "intent": "amenity_search",
+      "title": "Current Temperature Near Gyeongju National Museum",
+      "user_utterance": "What's the current temperature around Gyeongju National Museum?",
+      "intent": "weather",
       "architecture_route": "Driver <-> GPT-Realtime-2.1 <-> AI Gateway <-> OpenAI Web Search Tool",
-      "telemetry_event": {
-        "remaining_fuel_percent": 8,
-        "cruising_range_km": 38,
-        "location": "Approaching Gyeongju IC (Highway 1)",
-        "lat": 35.8012,
-        "lng": 129.1824
+      "search_context": {
+        "location": "Gyeongju National Museum, Gyeongju, South Korea",
+        "information_requested": ["current temperature", "current weather conditions"]
       },
-      "tool_definition": {
-        "name": "search_nearby_amenities",
-        "description": "Searches real-time POIs such as gas stations with live unit prices within driving vicinity.",
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "category": { "type": "string", "enum": ["gas_station", "ev_charger", "rest_area"] },
-            "fuel_type": { "type": "string", "enum": ["gasoline", "diesel"] },
-            "radius_km": { "type": "number" }
-          },
-          "required": ["category"]
-        }
-      },
-      "tool_call_payload": {
-        "category": "gas_station",
-        "fuel_type": "gasoline",
-        "radius_km": 5.0
-      },
-      "mock_backend_response": {
-        "stations": [
-          {
-            "name": "Alttul Self Gas Station (Gyeongju IC Branch)",
-            "distance_km": 1.8,
-            "address": "128 Seoak-dong, Gyeongju-si",
-            "gasoline_krw": 1589,
-            "diesel_krw": 1475,
-            "is_self_service": true,
-            "detour_time_min": 3
-          },
-          {
-            "name": "SK Energy Hwangnam Station",
-            "distance_km": 3.4,
-            "address": "45 Hwangnam-dong, Gyeongju-si",
-            "gasoline_krw": 1650,
-            "diesel_krw": 1520,
-            "is_self_service": false,
-            "detour_time_min": 6
-          }
-        ]
-      },
-      "agent_voice_response": "You have about 38 kilometers of fuel remaining. The cheapest option nearby is Alttul Self Station right off Gyeongju IC, 1.8 kilometers away, at 1,589 won per liter. Would you like me to set it as a waypoint?"
+      "tool_definition": null,
+      "tool_call_payload": null,
+      "mock_backend_response": null,
+      "agent_voice_response": "I'll look up the current temperature and conditions around Gyeongju National Museum and share the source."
     },
     {
       "step": 4,
