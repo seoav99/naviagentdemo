@@ -33,7 +33,7 @@ const nodes = {
   accessError: $('#access-error'), accessSubmit: $('#access-submit'),
 };
 
-const sampleLabels = ['Plan a route', 'Avoid traffic', 'Find fuel', 'Tell me a joke', 'Trip report'];
+const sampleLabels = ['Plan a route', 'Avoid traffic', 'Museum weather', 'Tell me a joke', 'Trip report'];
 
 async function initialize() {
   try {
@@ -198,7 +198,7 @@ function renderExamples() {
     copy.className = 'step-copy';
     const category = document.createElement('span');
     category.className = 'step-phase';
-    category.textContent = ['ROUTE', 'TRAFFIC', 'FUEL', 'CHAT', 'TRIP REPORT'][index];
+    category.textContent = ['ROUTE', 'TRAFFIC', 'WEATHER', 'CHAT', 'TRIP REPORT'][index];
     const title = document.createElement('span');
     title.className = 'step-title';
     title.textContent = sampleLabels[index];
